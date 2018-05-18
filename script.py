@@ -12,6 +12,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import metrics
 from sklearn.naive_bayes import MultinomialNB
 import pandas as pd
+import numpy as np
 df=pd.read_csv('fake_or_real_news.csv')
 #print(df.head())
 y=df.label
@@ -46,9 +47,20 @@ cm=metrics.confusion_matrix(y_test,pred,labels=['FAKE','REAL'])
 nb_classifier.fit(tfidf_train,y_train)
 pred=nb_classifier.predict(tfidf_test)
 score=metrics.accuracy_score(y_test,pred)
-print(score)
+#print(score)
 cm=metrics.confusion_matrix(y_test,pred,labels=['FAKE','REAL'])
-print(cm)
+#print(cm)
 
+alphas = np.arange(0,1,0.1)
+def train_and_predict(alpha):
+    nb_classifier = MultinomialNB(alpha=alpha)
+    nb_classifier.fit(tfidf_train,y_train)
+    pred=nb_classifier.predict(tfidf_test)
+    score=metrics.accuracy_score(y_test,pred)
+    return score
+for alpha in alphas:
+    print('Alpha: ', alpha)
+    print('Score: ', train_and_predict(alpha))
+    print()
 
 
