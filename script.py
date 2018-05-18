@@ -64,3 +64,8 @@ for alpha in alphas:
     print()
 
 
+class_labels = nb_classifier.classes_
+feature_names = tfidf_vectorizer.get_feature_names()
+feat_with_weights = sorted(zip(nb_classifier.coef_[0], feature_names))
+print(class_labels[0], feat_with_weights[:20])
+print(class_labels[1], feat_with_weights[-20:])
