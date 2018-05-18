@@ -9,6 +9,8 @@ Created on Fri May 18 22:13:51 2018
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn import metrics
+from sklearn.naive_bayes import MultinomialNB
 import pandas as pd
 df=pd.read_csv('fake_or_real_news.csv')
 #print(df.head())
@@ -25,13 +27,28 @@ tfidf_test=tfidf_vectorizer.transform(X_test)
 #print(tfidf_vectorizer.get_feature_names()[:10])
 #print(tfidf_train.A[:5])
 
-count_df=pd.DataFrame(count_train.A,columns=count_vectorizer.get_feature_names())
-tfidf_df=pd.DataFrame(tfidf_train.A,columns=tfidf_vectorizer.get_feature_names())
-print(count_df.head())
-print(tfidf_df.head())
-difference = set(count_df.columns) - set(tfidf_df.columns)
-print(difference)
-print(count_df.equals(tfidf_df))
+#count_df=pd.DataFrame(count_train.A,columns=count_vectorizer.get_feature_names())
+#tfidf_df=pd.DataFrame(tfidf_train.A,columns=tfidf_vectorizer.get_feature_names())
+#print(count_df.head())
+#print(tfidf_df.head())
+#difference = set(count_df.columns) - set(tfidf_df.columns)
+#print(difference)
+#print(count_df.equals(tfidf_df))
+
+nb_classifier=MultinomialNB()
+nb_classifier.fit(count_train,y_train)
+pred=nb_classifier.predict(count_test)
+score=metrics.accuracy_score(y_test,pred)
+#print(score)
+cm=metrics.confusion_matrix(y_test,pred,labels=['FAKE','REAL'])
+#print(cm)
+
+nb_classifier.fit(tfidf_train,y_train)
+pred=nb_classifier.predict(tfidf_test)
+score=metrics.accuracy_score(y_test,pred)
+print(score)
+cm=metrics.confusion_matrix(y_test,pred,labels=['FAKE','REAL'])
+print(cm)
 
 
 
